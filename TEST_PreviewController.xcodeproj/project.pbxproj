@@ -20,7 +20,7 @@
 		55069BBA175C873D005159B8 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55069BB8175C873D005159B8 /* ViewController.xib */; };
 		55069BC1175C876C005159B8 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55069BC0175C876C005159B8 /* QuickLook.framework */; };
 		55240F091761E818002A93E2 /* photo 2013-06-03 16.58.54.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 55240F081761E818002A93E2 /* photo 2013-06-03 16.58.54.jpg */; };
-		55E45B3818167187001FC77A /* UINavigationItem+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E45B3718167187001FC77A /* UINavigationItem+Custom.m */; };
+		554AE2021831C1CD00767514 /* UINavigationItem+Custom.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E45B3718167187001FC77A /* UINavigationItem+Custom.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -186,10 +186,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				554AE2021831C1CD00767514 /* UINavigationItem+Custom.m in Sources */,
 				55069BAA175C873D005159B8 /* main.m in Sources */,
 				55069BAE175C873D005159B8 /* AppDelegate.m in Sources */,
 				55069BB7175C873D005159B8 /* ViewController.m in Sources */,
-				55E45B3818167187001FC77A /* UINavigationItem+Custom.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

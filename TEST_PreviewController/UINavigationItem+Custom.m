@@ -14,7 +14,8 @@
 
 void MethodSwizzle(Class c, SEL origSEL, SEL overrideSEL);
 
-- (void)override_setRightBarButtonItem:(UIBarButtonItem *)item animated:(BOOL)animated{   
+- (void)override_setRightBarButtonItem:(UIBarButtonItem *)item animated:(BOOL)animated
+{   
     if (item && [item.target isKindOfClass:[QLPreviewController class]] && item.action == @selector(actionButtonTapped:)){
         QLPreviewController *previewController = (QLPreviewController *)item.target;
         [self override_setRightBarButtonItem:previewController.navigationItem.rightBarButtonItem animated:animated];
@@ -23,7 +24,27 @@ void MethodSwizzle(Class c, SEL origSEL, SEL overrideSEL);
     }
 }
 
-void MethodSwizzle(Class class, SEL originalSEL, SEL overrideSEL) {
+- (void)override_setRightBarButtonItems:(NSArray *)items animated:(BOOL)animated
+{   
+    if ([items count] == 0) {
+        return;
+    } else {
+        UIBarButtonItem *firstItem = [items objectAtIndex:0];
+        BOOL override = NO;
+        if (firstItem && [firstItem.target isKindOfClass:[QLPreviewController class]] && firstItem.action == @selector(actionButtonTapped:)) {
+            override = YES;
+        }
+        if (override) {
+            QLPreviewController *previewController = (QLPreviewController *)firstItem.target;
+            [self override_setRightBarButtonItems:previewController.navigationItem.rightBarButtonItems animated:animated];
+        } else {
+            [self override_setRightBarButtonItems:items animated:animated];
+        }
+    }
+}
+
+void MethodSwizzle(Class class, SEL originalSEL, SEL overrideSEL) 
+{
     Method originalMethod = class_getInstanceMethod(class, originalSEL);
     Method overrideMethod = class_getInstanceMethod(class, overrideSEL);
     
@@ -34,8 +55,24 @@ void MethodSwizzle(Class class, SEL originalSEL, SEL overrideSEL) {
     }
 }
 
-+ (void)load {
-    MethodSwizzle(self, @selector(setRightBarButtonItem:animated:), @selector(override_setRightBarButtonItem:animated:));
++ (void)exchangeMethod
+{
+	MethodSwizzle(self, @selector(setRightBarButtonItem:animated:), @selector(override_setRightBarButtonItem:animated:));
+    MethodSwizzle(self, @selector(setRightBarButtonItems:animated:), @selector(override_setRightBarButtonItems:animated:));
 }
+
++ (void)noExchangeMethod
+{
+	MethodSwizzle(self, @selector(override_setRightBarButtonItem:animated:), @selector(setRightBarButtonItem:animated:));
+    MethodSwizzle(self, @selector(override_setRightBarButtonItems:animated:), @selector(setRightBarButtonItems:animated:));
+}
+
+#if USE_LOAD == 1
++ (void)load
+{
+    MethodSwizzle(self, @selector(setRightBarButtonItem:animated:), @selector(override_setRightBarButtonItem:animated:));
+    MethodSwizzle(self, @selector(setRightBarButtonItems:animated:), @selector(override_setRightBarButtonItems:animated:));
+}
+#endif
 
 @end

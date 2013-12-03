@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+#define USE_LOAD 0
+
+@interface PlaceholderObject : NSObject
+
+@end
+
 @interface UINavigationItem (Custom)
+
++ (void)exchangeMethod;
++ (void)noExchangeMethod;
 
 @end
