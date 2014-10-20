@@ -32,24 +32,44 @@
 @end
 
 // use runtime
+
+@interface CSBarButtonItem : UIBarButtonItem
+
+@end
+
+@implementation CSBarButtonItem
+
+@end
+
 @interface CSPreviewController : QLPreviewController
 
 @end
 
 @implementation CSPreviewController
+
+static IMP origImpOne;
+static IMP origImpTwo;
+
+static void override_setRightBarButtonItem(id self__, SEL cmd__, UIBarButtonItem *item, BOOL animated)
 {
-	IMP origImpOne;
-	IMP origImpTwo;
+    if ([item isMemberOfClass:[CSBarButtonItem class]]) {
+        origImpOne(self__, cmd__, item, animated);
+    }
 }
 
-static void override_setRightBarButtonItem(id _self, SEL __cmd, UIBarButtonItem *item, BOOL animated)
+static void override_setRightBarButtonItems(id self__, SEL cmd__, NSArray *items, BOOL animated)
 {
-	
-}
-
-static void override_setRightBarButtonItems(id _self, SEL __cmd, NSArray *items, BOOL animated)
-{
-	
+    BOOL flag = NO;
+    for (id item in items) {
+        if ([item isMemberOfClass:[CSBarButtonItem class]]) {
+            flag = YES;
+            break;
+        }
+    }
+    
+    if (flag) {
+        origImpTwo(self__, cmd__, items, animated);
+    }
 }
 
 - (void)dealloc
@@ -63,6 +83,9 @@ static void override_setRightBarButtonItems(id _self, SEL __cmd, NSArray *items,
 {
 	[self overrideMethod];
 	[super viewWillAppear:animated];
+    
+    CSBarButtonItem *item = [[CSBarButtonItem alloc] initWithTitle:@"Custom" style:UIBarButtonItemStylePlain target:self action:@selector(test)];
+    [self.navigationItem setRightBarButtonItems:@[item] animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -93,6 +116,10 @@ static void override_setRightBarButtonItems(id _self, SEL __cmd, NSArray *items,
 	SEL selectorTwoToOverride = @selector(setRightBarButtonItems:animated:);
 	Method methodTwo = class_getInstanceMethod([UINavigationItem class], selectorTwoToOverride);
 	method_setImplementation(methodTwo, origImpTwo);
+}
+
+- (void)test {
+    NSLog(@"%s", __func__);
 }
 
 @end
