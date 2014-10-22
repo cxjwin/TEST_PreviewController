@@ -41,7 +41,7 @@
 
 @end
 
-@interface CSPreviewController : QLPreviewController
+@interface CSPreviewController : QLPreviewController<UIDocumentInteractionControllerDelegate>
 
 @end
 
@@ -50,14 +50,14 @@
 static IMP origImpOne;
 static IMP origImpTwo;
 
-static void override_setRightBarButtonItem(id self__, SEL cmd__, UIBarButtonItem *item, BOOL animated)
+static void override_setRightBarButtonItem(id navigationItem, SEL sel, UIBarButtonItem *item, BOOL animated)
 {
     if ([item isMemberOfClass:[CSBarButtonItem class]]) {
-        origImpOne(self__, cmd__, item, animated);
+        origImpOne(navigationItem, sel, item, animated);
     }
 }
 
-static void override_setRightBarButtonItems(id self__, SEL cmd__, NSArray *items, BOOL animated)
+static void override_setRightBarButtonItems(id navigationItem, SEL sel, NSArray *items, BOOL animated)
 {
     BOOL flag = NO;
     for (id item in items) {
@@ -68,8 +68,8 @@ static void override_setRightBarButtonItems(id self__, SEL cmd__, NSArray *items
     }
     
     if (flag) {
-        origImpTwo(self__, cmd__, items, animated);
-    }
+        origImpTwo(navigationItem, sel, items, animated);
+	}
 }
 
 - (void)dealloc
@@ -83,9 +83,13 @@ static void override_setRightBarButtonItems(id self__, SEL cmd__, NSArray *items
 {
 	[self overrideMethod];
 	[super viewWillAppear:animated];
-    
-    CSBarButtonItem *item = [[CSBarButtonItem alloc] initWithTitle:@"Custom" style:UIBarButtonItemStylePlain target:self action:@selector(test)];
-    [self.navigationItem setRightBarButtonItems:@[item] animated:YES];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	
+	CSBarButtonItem *actionItem = [[CSBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(openURL)];
+	[self.navigationItem setRightBarButtonItems:@[actionItem] animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -118,8 +122,19 @@ static void override_setRightBarButtonItems(id self__, SEL cmd__, NSArray *items
 	method_setImplementation(methodTwo, origImpTwo);
 }
 
-- (void)test {
-    NSLog(@"%s", __func__);
+- (void)openURL {
+	NSLog(@"custom open action...");
+	NSURL *URL = self.currentPreviewItem.previewItemURL;
+	UIDocumentInteractionController *docInteractionController = [UIDocumentInteractionController interactionControllerWithURL:URL];
+	docInteractionController.delegate = self;
+	[docInteractionController presentOptionsMenuFromRect:self.view.frame inView:self.view animated:YES];
+}
+
+#pragma mark - UIDocumentInteractionControllerDelegate
+
+- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)interactionController
+{
+	return self;
 }
 
 @end
