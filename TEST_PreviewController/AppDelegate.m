@@ -10,21 +10,15 @@
 
 #import "ViewController.h"
 
-@implementation AppDelegate 
-
-- (void)dealloc
-{
-    [_window release];
-    [super dealloc];
-}
+@implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    ViewController *viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
+    ViewController *viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     viewController.filePath = [[NSBundle mainBundle] pathForResource:@"photo 2013-06-03 16.58.54" ofType:@"jpg"];
-    UINavigationController *nav = [[[UINavigationController alloc] initWithRootViewController:viewController] autorelease];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     return YES;

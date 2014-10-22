@@ -76,7 +76,6 @@ static void override_setRightBarButtonItems(id navigationItem, SEL sel, NSArray 
 {
     origImpOne = NULL;
 	origImpTwo = NULL;
-	[super dealloc];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -150,16 +149,6 @@ static void override_setRightBarButtonItems(id navigationItem, SEL sel, NSArray 
 
 @implementation ViewController
 
-- (void)dealloc
-{
-	[_csPreviewController release];
-    [_cgPreviewController release];
-	[_orPreviewController release];
-    [_fileName release];
-    [_filePath release];
-    [super dealloc];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -173,7 +162,7 @@ static void override_setRightBarButtonItems(id navigationItem, SEL sel, NSArray 
 	[button addTarget:self action:@selector(test) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:button];
 	
-    self.csPreviewController = [[[CSPreviewController alloc] init] autorelease];
+    self.csPreviewController = [[CSPreviewController alloc] init];
     self.csPreviewController.dataSource = self;
     self.csPreviewController.delegate = self;
     self.csPreviewController.currentPreviewItemIndex = 0;
@@ -186,7 +175,7 @@ static void override_setRightBarButtonItems(id navigationItem, SEL sel, NSArray 
 	[button2 addTarget:self action:@selector(test2) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:button2];
 	
-	self.orPreviewController = [[[QLPreviewController alloc] init] autorelease];
+	self.orPreviewController = [[QLPreviewController alloc] init];
     self.orPreviewController.dataSource = self;
     self.orPreviewController.delegate = self;
     self.orPreviewController.currentPreviewItemIndex = 0;
@@ -199,7 +188,7 @@ static void override_setRightBarButtonItems(id navigationItem, SEL sel, NSArray 
 	[button3 addTarget:self action:@selector(test3) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:button3];
 	
-	self.cgPreviewController = [[[CGPreviewController alloc] init] autorelease];
+	self.cgPreviewController = [[CGPreviewController alloc] init];
     self.cgPreviewController.dataSource = self;
     self.cgPreviewController.delegate = self;
     self.cgPreviewController.currentPreviewItemIndex = 0;
